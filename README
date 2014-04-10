@@ -1,5 +1,9 @@
 lang: python
 reference: http://norvig.com/spell-correct.html
 
+Requirements:
 1:	basic spell checker
-2:	add spell corrector referring bash-History.txt file
+2:	add spell corrector referring my bash-History.txt file
+
+
+

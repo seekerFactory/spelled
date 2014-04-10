@@ -20,6 +20,8 @@ def train(features):
 NWORDS = train(words(file('big.txt').read()))
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
+
+
 # def split_words(word):
 # returns list of set(a, b) formed by breaking the word into two (a, b) eachtime
 # word = a + b
@@ -49,8 +51,6 @@ def split_words(word):
 # insertion edit (add a letter)
 # when len(word) is n there are 26(n + 1) elements in this list
 
-
-#
 # def edits1(word):
 # returns a list of all edits which are at edit_distance 1
 # when len(word) is n there are (54n + 25) edits at edit_distance 1
@@ -91,8 +91,7 @@ def correct(word):
 
 
 ################ Testing code from here on ################
-
-def spelltest(tests, bias=10, verbose=False):
+def spelltest(tests, bias=None, verbose=True):
     import time
     n, bad, unknown, start = 0, 0, 0, time.clock()
     if bias:
