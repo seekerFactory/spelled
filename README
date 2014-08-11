@@ -5,8 +5,9 @@ References:
 2:	https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
 
 Requirements:
-1:	basic spell checker
-2:	add spell corrector for localalization
+1:	basic spell checker(english, devnagri) 
+2:	form sentences from tags
+3:	learning from script examples to correct bash commands
 
 Terminology:
 1:	ngram
