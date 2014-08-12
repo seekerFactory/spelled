@@ -14,8 +14,13 @@ def known(words): return set(w for w in words if w in NWORDS)
 ## candidates = set with shortest edit_distance to original word as long as set has known words
 ## After identifying candidate set it returns word with highest P(c) value estimated by NWORDS model
 def correct(word):
-	candidates = known([word]) or known(edits1(word)) or known_edits2(word) or [word]
-	return max(candidates, key=NWORDS.get)
+    candidates = known([word]) or known(edits1(word)) or known_edits2(word) or [word];
+    
+    #if (len(word) > 0): print("k_word(%r) => k_edits1(%r) => k_edits2(%r) => for word %r" % (known([word]), known(edits1(word)), known_edits2(word), word));
+    #if candidates == [word]: print("known_edits1(%r) for word %r" %((edits1(word)), word));
+
+    
+    return max(candidates, key=NWORDS.get)
 
 ## def split_words(word):
 ## returns list of set(a, b) formed by breaking the word into two (a, b) eachtime
@@ -37,8 +42,8 @@ def edits1(word):
 	splits = split_words(word)
 	deletes = [a + b[1:] for a, b in splits]
 	transposes = [a + b[1] + b[0] + b[2:] for a, b in splits if len(b)>1]
-	alterations = [a + c + b[1:] for a, b in splits for c in alphabet if b]
-	inserts =  [a + c + b     for a, b in splits for c in alphabet]
+	alterations = [a + c + b[1:] for a, b in splits for c in _alphabet if b]
+	inserts =  [a + c + b     for a, b in splits for c in _alphabet]
     
 	return set(deletes + transposes + alterations + inserts)
 
@@ -50,12 +55,21 @@ def known_edits2(word):
 	return set(e2 for e1 in edits1(word) for e2 in edits1(e1) if e2 in NWORDS)
 
 
+## Very high dependency on _lang variable for selecting selecting other properties , set before calling train() with option(hindi | english)
+_lang = "english";
+_book=""; _inPath=""; _alphabet = "";
+if _lang == 'english':
+    _book = 'big.txt';
+    _inPath = './corpus/eng';
+    _alphabet = charecterSet('english')
+elif _lang == 'hindi':
+    _book = 'premchand.txt';
+    _inPath = './corpus/brahmi';
+    _alphabet = charecterSet('hindi')
 
-#book = 'premchand.txt';
-book = 'big.txt';
-inPath = './corpus/eng';
 
-NWORDS = train(wordsInText(readBook(book, inPath, True)));
+NWORDS = train(wordsInText(readBook(_book, _inPath, True)));
 #WIKIERRORS = bigWikiTrainer(wordsInText(readBook('bigWikiErrors.txt', inPath), "\n+"), NWORDS)
-alphabet = charecterSet('english')
-#alphabet = charecterSet('devanagari')
+## will add word for bad cases in learned  as EXPECTENCE[word] = target
+EXPECTENCE = train([]);
+

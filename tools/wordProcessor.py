@@ -16,12 +16,12 @@ def wordsInText(text, seperator="\s+"):
 	return regex.split(seperator, text)
 
 								
-def charecterSet(script="latin1"):
+def charecterSet(script="english"):
 ## not clear if to pass as language name(english, hindi) or script(latin1, devanagri) 
 	literals = "";
-	if script == "latin1":
+	if script == "english":
 		literals = 'abcdefghijklmnopqrstuvwxyz'
-	elif script == "devanagari":
+	elif script == "hindi":
 		for i in range(0x0900, 0x094F):
 			literals += chr(i)
 	

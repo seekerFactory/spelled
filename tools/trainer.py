@@ -11,9 +11,18 @@ def train(features):
 	return model
 
 
+
+## EXPECTENCE model only created with bad cases for learned
+def expectence(features):
+	model = collections.defaultdict(lambda: 1)
+	for f in features:
+		model[f] += 1
+	return model
+
+
+
 ## def bigWikiTrainer(features, NWORDS, verbose=True):
 ## train Error list from wiki common errors list
-
 def bigWikiTrainer(features, NWORDS, verbose=True):
 ## NOT COMPLETE
 

@@ -51,8 +51,9 @@ def learned(tests, bias=None, verbose=True):
 				bad += 1
 				if (target not in NWORDS):
 					unknown +=1
-					NWORDS[target] = 1
-#				elif NWORDS[target] > NWORDS[w]:
+					NWORDS[target] = 1;
+				else:
+					NWORDS[target] += int((NWORDS[target] + NWORDS[w])/2)
 
 				if verbose:
 					print('correct(%r) => %r (%d); expected %r (%d)' % (wrong, w, NWORDS[w], target, NWORDS[target]))
@@ -64,18 +65,11 @@ def learned(tests, bias=None, verbose=True):
 
 
 if __name__ == '__main__':
-	words_hin = ["हिन्दी", "घार", "घर", "घरम"]
-	words_eng = ["imposible", "wort", "rmov", "pag"]
 
-#	for word in words_eng:
-#		for c in word:
-#			print(c, ud.category(c), ud.name(c))
 
-#		print('CorrectOf(%r) => %r\n' % (word, correct(word)))
-    
     # print(learnpy(test1.test()))
 	dataset=[]
 	for i in range(3):
-		dataset.append((i, spelltest(test1.test())))
+		dataset.append((i, learned(test2.test(), 10)))
 
 	for item in dataset: print(item)
