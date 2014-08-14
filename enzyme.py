@@ -34,8 +34,9 @@ def spelltest(tests, bias=None, verbose=True):
 
 
 
-## Will be adding unown words into NWORDS
-## adding probability diff mean of bad known cases
+## Will be adding unown words into NWORDS for bad cases,
+## else increase  P(target) with difference in mean of P(target) and P(cw),
+## which increases next time chances if possible to reach through our correction algorithm.
 def learned(tests, bias=None, verbose=True):
 	import time
 	n, bad, unknown, start = 0, 0, 0, time.clock()
@@ -53,7 +54,7 @@ def learned(tests, bias=None, verbose=True):
 					unknown +=1
 					NWORDS[target] = 1;
 				else:
-					NWORDS[target] += int((NWORDS[target] + NWORDS[w])/2)
+					NWORDS[target] += int(abs(NWORDS[target] - NWORDS[w])/2)
 
 				if verbose:
 					print('correct(%r) => %r (%d); expected %r (%d)' % (wrong, w, NWORDS[w], target, NWORDS[target]))
@@ -66,10 +67,15 @@ def learned(tests, bias=None, verbose=True):
 
 if __name__ == '__main__':
 
+########## Change these as needed #############
+	lang = "english"
+	bias, verbose, timesrun = None, True, 2
+###############################################
 
-    # print(learnpy(test1.test()))
 	dataset=[]
-	for i in range(3):
-		dataset.append((i, learned(test2.test(), 10)))
+	_lang, NWORDS = setGlobalsWithLanguage(lang)
+
+	for i in range(timesrun):
+		dataset.append(("Ran "+str(i+1), learned(test2.test(), bias, verbose)))
 
 	for item in dataset: print(item)
