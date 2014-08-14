@@ -4,7 +4,8 @@ from tools.trainer import *
 
 ## def known(words):
 ## returns list of known words(appeared in languagemodel) from [words] passed
-def known(words): return set(w for w in words if w in NWORDS)
+def known(words):
+	return set(w for w in words if w in NWORDS)
 
 
 ## def correct(word):
@@ -15,10 +16,6 @@ def known(words): return set(w for w in words if w in NWORDS)
 ## After identifying candidate set it returns word with highest P(c) value estimated by NWORDS model
 def correct(word):
     candidates = known([word]) or known(edits1(word)) or known_edits2(word) or [word];
-    
-    #if (len(word) > 0): print("k_word(%r) => k_edits1(%r) => k_edits2(%r) => for word %r" % (known([word]), known(edits1(word)), known_edits2(word), word));
-    #if candidates == [word]: print("known_edits1(%r) for word %r" %((edits1(word)), word));
-
     
     return max(candidates, key=NWORDS.get)
 
@@ -56,20 +53,28 @@ def known_edits2(word):
 
 
 ## Very high dependency on _lang variable for selecting selecting other properties , set before calling train() with option(hindi | english)
-_lang = "english";
+_lang = "";
 _book=""; _inPath=""; _alphabet = "";
-if _lang == 'english':
-    _book = 'big.txt';
-    _inPath = './corpus/eng';
-    _alphabet = charecterSet('english')
-elif _lang == 'hindi':
-    _book = 'premchand.txt';
-    _inPath = './corpus/brahmi';
-    _alphabet = charecterSet('hindi')
+NWORDS=train([]);
 
+def setGlobalsWithLanguage(lang):
+	global _lang, _book, _inPath, _alphabet, NWORDS;
+	
+	if lang == "english":
+		_lang = lang;
+		_book = 'big.txt';
+		_inPath = './corpus/eng';
+	elif lang == 'hindi':
+		_lang = lang;
+		_book = 'premchand.txt';
+		_inPath = './corpus/brahmi';
+	
 
-NWORDS = train(wordsInText(readBook(_book, _inPath, True)));
-#WIKIERRORS = bigWikiTrainer(wordsInText(readBook('bigWikiErrors.txt', inPath), "\n+"), NWORDS)
-## will add word for bad cases in learned  as EXPECTENCE[word] = target
-EXPECTENCE = train([]);
+	_alphabet = charecterSet(_lang);
+	NWORDS = train(wordsInText(readBook(_book, _inPath, True), _alphabet));
+	return (_lang, NWORDS)
+
+	## Still havn't started using WIKIERRORS
+	#WIKIERRORS = bigWikiTrainer(wordsInText(readBook('bigWikiErrors.txt', inPath), "\n+"), NWORDS)
+
 

@@ -1,15 +1,43 @@
-lang: python
+lang: python3
+modules: regex, collections, unicodedata, time
 
 References: 
 1:	http://norvig.com/spell-correct.html
 2:	https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
 
-Requirements:
-1:	basic spell checker(english, devnagri) 
-2:	form sentences from tags
-3:	learning from script examples to correct bash commands
-
 Terminology:
 1:	ngram
 2:	Memoization
-3:	Must add "TIME-TO LIVE" as memoize can keep yur buffer growing that can eat yur memory away. 
+
+Requirements:
+1:	basic spell checker(english, devnagri..) 
+2:	form sentences from tags
+3:	learning from script examples to correct bash commands
+
+COMMENTS:
+0:	Scripts (basic, enzyme, test1, test2) are all independent examples.
+	basic -- runs on small example set(<10) for testing if all works fastly :) 
+	test1 -- medium set(270) test cases.
+	test2 -- large set(400) test cases.
+	enzyme -- to compare learned() with spelltest(), which set needs to be mentioned.
+	Corrections can be provided with:
+		>>> from testCases import *
+		>>> from tools.trainer import *
+		>>> from tools.ngram import *
+		>>>
+		>>>
+		>>>	_lang, NWORDS = setGlobalsWithLanguage("language");
+		>>>	correct(wrong);
+
+	For adding any new lang just need to add a book inside corpus and make sure _inPath, _book, _lang parameters in tools.ngram.py is getting set under setGlobalsWithLanguage() and provide literals for lang inside tools.wordProcessor.charecterSet() which finally creates NGRAMS for the language.
+	Best to add small example set under testCases.basic.test(), will be faster to check the rest when bugs removed.  
+
+1:	Include bigram model(edit_distance 2) at max yet
+2:	The main difference between spelltest() and learned() methods is that learned() reduces differcence between correct(word) and target which helps in next runs(only if target is part of cndidates ie; reachable,  but P(target) < P(correct(word)) ). This difference is provided automatically with (bias > 0) runs to some extent, hence result differences are not very high in these cases.  
+
+Runs with (bias=None) cases:
+1:	Unknowns are 0 after 1st run
+2:	After 1st, 2nd runs the difference in result is Null or random as the cases that remain can be only be improved further with edit_distance 3 algorithm included
+
+
+

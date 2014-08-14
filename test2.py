@@ -26,15 +26,22 @@ def spelltest(tests, bias=None, verbose=True):
             w = correct(wrong)
             if w!=target:
                 bad += 1
-                unknown += (target not in NWORDS)
+                unknown += (target not in NWORDS);
                 if verbose:
                     print('correct(%r) => %r (%d); expected %r (%d)' % (wrong, w, NWORDS[w], target, NWORDS[target]))
     
     return dict(bad=bad, n=n, bias=bias, pct=int(100. - 100.*bad/n), unknown=unknown, secs=int(time.clock()-start))
 
 if __name__ == '__main__':
-    dataset=[]
-    for i in range(3):
-        dataset.append((i, spelltest(test1.test())))
+######### Change these as needed #############
+	lang = "english"
+	bias, verbose, timesrun = None, True, 2
+##############################################
+	
+	dataset=[];
+	_lang, NWORDS = setGlobalsWithLanguage(lang);
 
-    for item in dataset: print(item)
+	for i in range(timesrun):
+		dataset.append(("Ran "+str(i+1), spelltest(test2.test(), bias, verbose)));
+	
+	for item in dataset: print(item)

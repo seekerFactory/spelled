@@ -13,6 +13,7 @@ def train(features):
 
 
 ## EXPECTENCE model only created with bad cases for learned
+## Still not added into use :)
 def expectence(features):
 	model = collections.defaultdict(lambda: 1)
 	for f in features:
@@ -21,10 +22,10 @@ def expectence(features):
 
 
 
+## NOT Yet in use
 ## def bigWikiTrainer(features, NWORDS, verbose=True):
 ## train Error list from wiki common errors list
 def bigWikiTrainer(features, NWORDS, verbose=True):
-## NOT COMPLETE
 
 	if verbose:
 		print("Creating Wiki common errors list")
