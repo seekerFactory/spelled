@@ -6,18 +6,21 @@ def removeNLine(line):
 
 def removeSChars(line):
 ## will seperate sChars and pass name, as param,  to be removed 
-	sChars = [r"(\n)", r"(\,)", r"(\!)", r"(\?)", r"(\:)", r"(\;)", r"(\()", r"(\))", chr(0x0964), chr(0x0965), chr(0x097D)]
+	#sChars = [r"(\,)", r"(\!)", r"(\?)", r"(\:)", r"(\;)", r"(\()", r"(\))", chr(0x0964), chr(0x0965), chr(0x097D)]
+	sChars = [r"\,", r"\!", r"\?", r"\:", r"\;", r"\(", r"\)", chr(0x0964), chr(0x0965), chr(0x097D)]
 	for char in sChars:
 		line = regex.sub(char, r"", line)
 	return line
 							
-def wordsInText(text, seperator="\s+"):
+def wordsInText(text, literals, seperator="\s+"):
 	## Word seperator will be (script, text) dependent!!
-	return regex.split(seperator, text)
+	#return regex.split(seperator, text.lower())
+	return regex.findall(r"\w+", text.lower())
 
 								
 def charecterSet(script="english"):
-## not clear if to pass as language name(english, hindi) or script(latin1, devanagri) 
+## unicode set for hindi
+
 	literals = "";
 	if script == "english":
 		literals = 'abcdefghijklmnopqrstuvwxyz'
