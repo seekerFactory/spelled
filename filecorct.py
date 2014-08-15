@@ -15,7 +15,7 @@ def filecorrect():
 
     #return wordsInText(readBook(book, inPath, True))
 
-if __name__ == '__main__':
+def main():
     lang="english"
     lines = filecorrect()
     words = regex.split("(\n+)", lines.lower())
@@ -37,3 +37,6 @@ if __name__ == '__main__':
     print("######## After Correction ########")
     print(cletter)
     print("################")
+
+if __name__ == '__main__':
+	main()

@@ -65,7 +65,8 @@ def learned(tests, bias=None, verbose=True):
 
 
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
+def main():
 
 ########## Change these as needed #############
 	lang = "english"
@@ -79,3 +80,6 @@ if __name__ == '__main__':
 		dataset.append(("Ran "+str(i+1), learned(test2.test(), bias, verbose)))
 
 	for item in dataset: print(item)
+
+if __name__ == '__main__':
+	main()

@@ -31,7 +31,8 @@ def spelltest(tests, bias=None, verbose=True):
     
     return dict(bad=bad, n=n, bias=bias, pct=int(100. - 100.*bad/n), unknown=unknown, secs=int(time.clock()-start))
 
-if __name__ == '__main__':
+
+def main():
 
 ## basic cases for fast testing with small number of examples.
 ## Choose one param ("english" | "hindi") for setGlobalsWithLanguage(param)
@@ -51,3 +52,9 @@ if __name__ == '__main__':
 	print("Running for Cases: %r " %(basic.test(case)))	
 	for item in dataset: print(item)
 #	print(NWORDS)
+
+if __name__ == '__main__':
+## if parsing params from outside, change def main(params, ..); main(params, ..); 
+#import sys;
+
+	main()

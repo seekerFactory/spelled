@@ -32,8 +32,9 @@ def spelltest(tests, bias=None, verbose=True):
     
     return dict(bad=bad, n=n, bias=bias, pct=int(100. - 100.*bad/n), unknown=unknown, secs=int(time.clock()-start))
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
 
+def main():
 ######### Change these as needed #############
 	lang = "english"
 	bias, verbose, timesrun = None, True, 2
@@ -46,3 +47,6 @@ if __name__ == '__main__':
 		dataset.append(("Ran "+str(i+1), spelltest(test1.test(), bias, verbose)));
 	
 	for item in dataset: print(item)
+
+if __name__ == '__main__':
+	main()

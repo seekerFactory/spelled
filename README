@@ -15,19 +15,28 @@ Requirements:
 3:	learning from script examples to correct bash commands
 
 COMMENTS:
-0:	Scripts (basic, enzyme, test1, test2) are all independent examples.
+0:	Scripts (basic, enzyme, test1, test2, filecorct) are all independent examples.
+	Will get the (test* & basic) into one.
 	basic -- runs on small example set(<10) for testing if all works fastly :) 
 	test1 -- medium set(270) test cases.
 	test2 -- large set(400) test cases.
 	enzyme -- to compare learned() with spelltest(), which set needs to be mentioned.
-	Corrections can be provided with:
-		>>> from testCases import *
+	filecorct — linked with myBigErrorsList in corpus.eng and tries to correct it.
+
+	[basic, test1, test2, filecorct] from python shell:
+		>>> import basic
+		>>> basic.main()
+		similarly run for other any testcase runs 
+
+	Corrections from python shell:
+		>>> 
 		>>> from tools.trainer import *
 		>>> from tools.ngram import *
-		>>>
-		>>>
-		>>>	_lang, NWORDS = setGlobalsWithLanguage("language");
-		>>>	correct(wrong);
+		>>> 
+		>>> dword = "rint"
+		>>>  _lang, NWORDS = setGlobalsWithLanguage("language");
+		>>>  correct(word);
+		'ribg'
 
 	For adding any new lang just need to add a book inside corpus and make sure _inPath, _book, _lang parameters in tools.ngram.py is getting set under setGlobalsWithLanguage() and provide literals for lang inside tools.wordProcessor.charecterSet() which finally creates NGRAMS for the language.
 	Best to add small example set under testCases.basic.test(), will be faster to check the rest when bugs removed.  
