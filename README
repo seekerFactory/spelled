@@ -4,15 +4,18 @@ modules: regex, collections, unicodedata, time
 References: 
 1:	http://norvig.com/spell-correct.html
 2:	https://en.wikipedia.org/wiki/Wikipedia:Lists_of_common_misspellings/For_machines
+3:	http://ota.ahds.ac.uk/texts/0643.html
 
 Terminology:
 1:	ngram
 2:	Memoization
+3:	language model, error model
 
 Requirements:
-1:	basic spell checker(english, devnagri..) 
-2:	form sentences from tags
-3:	learning from script examples to correct bash commands
+1:	basic spell checker(english, devnagri..): using bigram model.
+2:	add trigram model
+3:	form sentences from tags
+4:	learning from script examples to correct bash commands
 
 COMMENTS:
 0:	Scripts (basic, enzyme, test1, test2, filecorct) are all independent examples.
@@ -33,16 +36,17 @@ COMMENTS:
 		>>> from tools.trainer import *
 		>>> from tools.ngram import *
 		>>> 
+		>>> language = "english"
 		>>> dword = "rint"
-		>>>  _lang, NWORDS = setGlobalsWithLanguage("language");
-		>>>  correct(word);
-		'ribg'
+		>>>  _lang, NWORDS = setGlobalsWithLanguage(language);
+		>>>  correct(dword);
+		'ring'
 
 	For adding any new lang just need to add a book inside corpus and make sure _inPath, _book, _lang parameters in tools.ngram.py is getting set under setGlobalsWithLanguage() and provide literals for lang inside tools.wordProcessor.charecterSet() which finally creates NGRAMS for the language.
 	Best to add small example set under testCases.basic.test(), will be faster to check the rest when bugs removed.  
 
-1:	Include bigram model(edit_distance 2) at max yet
-2:	The main difference between spelltest() and learned() methods is that learned() reduces differcence between correct(word) and target which helps in next runs(only if target is part of cndidates ie; reachable,  but P(target) < P(correct(word)) ). This difference is provided automatically with (bias > 0) runs to some extent, hence result differences are not very high in these cases.  
+1:	Bigram model(edit_distance 2) at max yet.
+2:	The main difference between spelltest() and learned() methods is that learned() reduces differcence between correct(word) and target which helps in next runs(only if target is part of cndidates ie; reachable,  but P(target) < P(correct(word)) ). This difference is provided automatically with (bias > 0) runs to some extent, hence result differences bw learned() and spelltest() are not very high in these cases. learned() is adding little bit of error-model into is as it compares P(target) and P(correct(word))
 
 Runs with (bias=None) cases:
 1:	Unknowns are 0 after 1st run

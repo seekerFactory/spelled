@@ -65,12 +65,12 @@ def learned(tests, bias=None, verbose=True):
 
 
 
-#if __name__ == '__main__':
-def main():
+if __name__ == '__main__':
+#def main():
 
 ########## Change these as needed #############
 	lang = "english"
-	bias, verbose, timesrun = None, True, 2
+	bias, verbose, timesrun = None, False, 2
 ###############################################
 
 	dataset=[]
@@ -81,5 +81,5 @@ def main():
 
 	for item in dataset: print(item)
 
-if __name__ == '__main__':
-	main()
+#if __name__ == '__main__':
+#	main()
