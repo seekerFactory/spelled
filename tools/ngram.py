@@ -15,9 +15,9 @@ def known(words):
 ## candidates = set with shortest edit_distance to original word as long as set has known words
 ## After identifying candidate set it returns word with highest P(c) value estimated by NWORDS model
 def correct(word):
-    candidates = known([word]) or known(edits1(word)) or known_edits2(word) or [word];
+	candidates = known([word]) or known(edits1(word)) or known_edits2(word) or [word];
     
-    return max(candidates, key=NWORDS.get)
+	return max(candidates, key=NWORDS.get)
 
 ## def split_words(word):
 ## returns list of set(a, b) formed by breaking the word into two (a, b) eachtime
@@ -41,7 +41,6 @@ def edits1(word):
 	transposes = [a + b[1] + b[0] + b[2:] for a, b in splits if len(b)>1]
 	alterations = [a + c + b[1:] for a, b in splits for c in _alphabet if b]
 	inserts =  [a + c + b     for a, b in splits for c in _alphabet]
-    
 	return set(deletes + transposes + alterations + inserts)
 
 
@@ -56,9 +55,10 @@ def known_edits2(word):
 _lang = "";
 _book=""; _inPath=""; _alphabet = "";
 NWORDS=train([]);
+EXPECTENCE=train([]);
 
-def setGlobalsWithLanguage(lang):
-	global _lang, _book, _inPath, _alphabet, NWORDS;
+def setGlobalsWithLanguage(lang, expectence=False):
+	global _lang, _book, _inPath, _alphabet, NWORDS, EXPECTENCE;
 	
 	if lang == "english":
 		_lang = lang;
@@ -72,7 +72,10 @@ def setGlobalsWithLanguage(lang):
 
 	_alphabet = charecterSet(_lang);
 	NWORDS = train(wordsInText(readBook(_book, _inPath, True), _alphabet));
-	return (_lang, NWORDS)
+	if (expectence == False):
+		return (_lang, NWORDS)
+	elif (expectence == True):
+		return (_lang, NWORDS, EXPECTENCE)
 
 	## Still havn't started using WIKIERRORS
 	#WIKIERRORS = bigWikiTrainer(wordsInText(readBook('bigWikiErrors.txt', inPath), "\n+"), NWORDS)
