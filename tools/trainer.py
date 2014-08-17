@@ -12,12 +12,10 @@ def train(features):
 
 
 
-## EXPECTENCE model only created with bad cases for learned
-## Still not added into use :)
+## EXPECTENCE model only created for bad cases for learned
+## Needs little modification :)
 def expectence(features):
 	model = collections.defaultdict(lambda: 1)
-	for f in features:
-		model[f] += 1
 	return model
 
 
