@@ -26,11 +26,11 @@ COMMENTS:
 	enzyme -- to compare learned() with spelltest(), which set needs to be mentioned.
 	filecorct — linked with myBigErrorsList in corpus.eng and tries to correct it.
 
+	-------------------------------------
 	[basic, test1, test2, filecorct] from python shell:
 		>>> import basic
 		>>> basic.main()
-		similarly run for other any testcase runs 
-
+	-------------------------------------
 	Corrections from python shell:
 		>>> 
 		>>> from tools.trainer import *
@@ -41,16 +41,19 @@ COMMENTS:
 		>>>  _lang, NWORDS = setGlobalsWithLanguage(language);
 		>>>  correct(dword);
 		'ring'
+	-------------------------------------
 
-	For adding any new lang just need to add a book inside corpus and make sure _inPath, _book, _lang parameters in tools.ngram.py is getting set under setGlobalsWithLanguage() and provide literals for lang inside tools.wordProcessor.charecterSet() which finally creates NGRAMS for the language.
-	Best to add small example set under testCases.basic.test(), will be faster to check the rest when bugs removed.  
+	For adding a new lang get a book inside corpus and make sure _inPath, _book, _lang parameters in tools.ngram.py is getting set under setGlobalsWithLanguage() and provide literals for lang inside tools.wordProcessor.charecterSet() which finally creates NGRAMS for the language.
+	Best to add small example set under testCases.basic.test(), before running test1 or test2, will be faster to remove bugs :)  
 
 1:	Bigram model(edit_distance 2) at max yet.
-2:	The main difference between spelltest() and learned() methods is that learned() reduces differcence between correct(word) and target which helps in next runs(only if target is part of cndidates ie; reachable,  but P(target) < P(correct(word)) ). This difference is provided automatically with (bias > 0) runs to some extent, hence result differences bw learned() and spelltest() are not very high in these cases. learned() is adding little bit of error-model into is as it compares P(target) and P(correct(word))
+2:	The main difference between spelltest() and learned() methods is that learned() reduces differcence between correct(word) and target which helps in next runs(only if target is part of cndidates ie; reachable,  but P(target) < P(correct(word)) ). Hence next time the target has more chances of being chosen inside max(candidates).
+	These points are provided from start with (bias > 0) runs, hence result differences bw learned() and spelltest() are not very high. 
+	learned() adds error-model as EXPEXTENCE def.dict, from which bad cases can be reduced as we already know which word is expected helping during multiple runs. 
 
 Runs with (bias=None) cases:
-1:	Unknowns are 0 after 1st run
-2:	After 1st, 2nd runs the difference in result is Null or random as the cases that remain can be only be improved further with edit_distance 3 algorithm included
+1:	Unknowns are 0 after 1st run only when caching in or inserting explicitly.
+2:	After 1st, 2nd runs the difference in result is Null or random as the cases that remain can be only be improved further with edit_distance 3 algorithm included for the examples provided.
 
 
 

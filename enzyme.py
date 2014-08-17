@@ -47,12 +47,19 @@ def learned(tests, bias=None, verbose=True):
 	for target,wrongs in tests.items():
 		for wrong in wrongs.split():
 			n += 1
-			w = correct(wrong)
+			## This is for multiple runs, as we already know (expected of wrong) word.
+			## Hence not again calling correct(wrong) 
+			if(wrong in EXPECTENCE):
+				w = EXPECTENCE[wrong]
+			else:
+				w = correct(wrong)
 			if w!=target:
 				bad += 1
 				if (target not in NWORDS):
-					unknown +=1
-					NWORDS[target] = 1;
+					unknown +=1;
+					## This is creating error model
+					EXPECTENCE[wrong] = target;
+
 				else:
 					NWORDS[target] += int(abs(NWORDS[target] - NWORDS[w])/2)
 
@@ -74,12 +81,13 @@ if __name__ == '__main__':
 ###############################################
 
 	dataset=[]
-	_lang, NWORDS = setGlobalsWithLanguage(lang)
+	_lang, NWORDS, EXPECTENCE = setGlobalsWithLanguage(lang, True)
 
 	for i in range(timesrun):
 		dataset.append(("Ran "+str(i+1), learned(test2.test(), bias, verbose)))
 
 	for item in dataset: print(item)
+#	print(EXPECTENCE)
 
 #if __name__ == '__main__':
-#	main()
+#`	main()
