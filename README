@@ -1,5 +1,5 @@
 lang: python3
-modules: regex, collections, unicodedata, time
+modules: regex, pkgutil, collections, unicodedata, time (Python lib)
 
 References: 
 1:	http://norvig.com/spell-correct.html
@@ -7,53 +7,64 @@ References:
 3:	http://ota.ahds.ac.uk/texts/0643.html
 
 Terminology:
-1:	ngram
-2:	Memoization
-3:	language model, error model
+1:	ngram, language model, error model
 
-Requirements:
-1:	basic spell checker(english, devnagri..): using bigram model.
-2:	add trigram model
-3:	form sentences from tags
-4:	learning from script examples to correct bash commands
+Targets((X.Y) as major.minor):
+1:		Basic norvig spell checker(english, devnagri..): using bigram model(edit distance 1 and 2).
+2.1:	Model for learning(need to learn and get close to expected words with training).
+2.2:	Edit set contains classes of same frequency words, utilise for correction.
+3.0:	Getting corpus data and literals of language(unicode) from web directly, reducing static entries into source using crawlers.
+3.1:	Graph ploters.
+------- Not started
+4:		form sentences from tags
+5:		learning from scripts | docs examples.
+-------
 
 COMMENTS:
 0:	Scripts (basic, enzyme, test1, test2, filecorct) are all independent examples.
 	Will get the (test* & basic) into one.
-	basic -- runs on small example set(<10) for testing if all works fastly :) 
+	basic -- runs on small example set(<10) for testing if all works, ... fastly :) 
 	test1 -- medium set(270) test cases.
 	test2 -- large set(400) test cases.
-	enzyme -- to compare learned() with spelltest(), which set needs to be mentioned.
+	enzyme -- to introduce learned() and get more comparisions of result using enzymetest().
 	filecorct — linked with myBigErrorsList in corpus.eng and tries to correct it.
 
 	-------------------------------------
-	[basic, test1, test2, filecorct] from python shell:
+	Running [basic, test1, test2, filecorct] from python shell:
 		>>> import basic
 		>>> basic.main()
 	-------------------------------------
 	Corrections from python shell:
+		Import package ngram(make sure in path)
 		>>> 
-		>>> from tools.trainer import *
-		>>> from tools.ngram import *
+		>>> from tools.ngram import NGram
 		>>> 
+		Set "language" option
 		>>> language = "english"
+		Create Language model for language
+		>>> ng = NGram(language)
 		>>> dword = "rint"
-		>>>  _lang, NWORDS = setGlobalsWithLanguage(language);
-		>>>  correct(dword);
+		>>> 
+		>>> ng.correct(dword);
 		'ring'
 	-------------------------------------
 
-	For adding a new lang get a book inside corpus and make sure _inPath, _book, _lang parameters in tools.ngram.py is getting set under setGlobalsWithLanguage() and provide literals for lang inside tools.wordProcessor.charecterSet() which finally creates NGRAMS for the language.
-	Best to add small example set under testCases.basic.test(), before running test1 or test2, will be faster to remove bugs :)  
+New Language: 
+	For adding a new language get a book.txt inside corpus and make sure datapkg, lang, book params in tools.ngram.py is getting set in class NGram.__init__ and provide unicode(best suited) literals for new language inside tools.wordProcessor in class WordProcessor.charecterSet() which finally creates NGRAMS for the new language.
+	Add small examples under testCases.basic.test(case) for your language case(before running test1 or test2) will be faster to remove any bugs if there :) . Currently this is messy will make it easier. 
 
-1:	Bigram model(edit_distance 2) at max yet.
-2:	The main difference between spelltest() and learned() methods is that learned() reduces differcence between correct(word) and target which helps in next runs(only if target is part of cndidates ie; reachable,  but P(target) < P(correct(word)) ). Hence next time the target has more chances of being chosen inside max(candidates).
-	These points are provided from start with (bias > 0) runs, hence result differences bw learned() and spelltest() are not very high. 
-	learned() adds error-model as EXPEXTENCE def.dict, from which bad cases can be reduced as we already know which word is expected helping during multiple runs. 
 
-Runs with (bias=None) cases:
-1:	Unknowns are 0 after 1st run only when caching in or inserting explicitly.
-2:	After 1st, 2nd runs the difference in result is Null or random as the cases that remain can be only be improved further with edit_distance 3 algorithm included for the examples provided.
+Difference between spelltest() and learned():
+1:	For cases where target is part of cndidates(correction set) ie; reachable,  but P(target) < P(correct(word)), hypothesis max(candidates) automatically chooses a word not expected adding a further bad case. In learned() we reduce the diff between target and chosen words after identifying such bad cases. Hence next runs the target has more chances of being choosen inside max(candidates).
+
+2:	Similar points are provided from start with (bias > 0) runs(for all unknown words).
+
+3:	learned() creates expectence-model as EXPEXTENCE def.dict after identifying expected word, hence learning in multiple runs(), as diff bw expected and choosen word can be large, without introducing unknowns into it and reducing particular bad cases. 
+
+
+Runs Results:
+1:	Unknowns are 0 after 1st run automatically(due to caching in or inserting explicitly) which reduces bad cases and increases correct answers on same set. Biasing also is doing the same as it inserts frequency of words by bias provided.  
+2:	After 1st and 2nd runs the differences in result is randomly very small as unknowns already removed and the bad cases that remain are mostly unreachable words(not reachable within edit distance2) without changing NWORDS.
 
 
 

@@ -3,8 +3,8 @@
 import unicodedata as ud
 
 from testCases import *
-from tools.trainer import *
-from tools.ngram import *
+#from tools.clstrainer import *
+from tools.ngram import NGram as NG
 
 
 ################ Testing code from here on ################
@@ -13,23 +13,26 @@ from tools.ngram import *
 ## When (correction) != (target) : (bad increases)
 ## When (target) not in NWORDS :  unknown word
 
-def spelltest(tests, bias=None, verbose=True):
-    import time
-    n, bad, unknown, start = 0, 0, 0, time.clock()
-    if bias:
-        for target in tests:
-            NWORDS[target] += bias
-    for target,wrongs in tests.items():
-        for wrong in wrongs.split():
-            n += 1
-            w = correct(wrong)
-            if w!=target:
-                bad += 1
-                unknown += (target not in NWORDS)
-            if verbose:
-                print('correct(%r) => %r (%d); expected %r (%d)' % (wrong, w, NWORDS[w], target, NWORDS[target]))
+def spelltest(tests, ng, bias=None, verbose=True):
+	import time
+
+	n, bad, unknown, start = 0, 0, 0, time.clock()
+	if bias:
+		for target in tests:
+			ng.NWORDS[target] += bias
+
+
+	for target,wrongs in tests.items():
+		for wrong in wrongs.split():
+			n += 1
+			w = ng.correct(wrong)
+			if w!=target:
+				bad += 1
+				unknown += (target not in ng.NWORDS)
+			if verbose:
+				print('correct(%r) => %r (%d); expected %r (%d)' % (wrong, w, ng.NWORDS[w], target, ng.NWORDS[target]))
     
-    return dict(bad=bad, n=n, bias=bias, pct=int(100. - 100.*bad/n), unknown=unknown, secs=int(time.clock()-start))
+	return dict(bad=bad, n=n, bias=bias, pct=int(100. - 100.*bad/n), unknown=unknown, secs=int(time.clock()-start))
 
 
 def main():
@@ -39,19 +42,22 @@ def main():
 ## Choose one param ("english" | "hindi" | "special") for basic.test(param), "special" only for "english" with examples with quotes etc
 
 ########## Change these as needed #############	
-#	lang, case = 'english', 'english'
-	lang, case = 'hindi', 'hindi'
-	bias, verbose, timesrun = None, True, 2
+	lang, case = 'english', 'english'
+#	lang, case = 'hindi', 'hindi'
+	bias, verbose, timesrun = None, True, 1
 ############################################### 
 
 	dataset=[];
-	_lang, NWORDS = setGlobalsWithLanguage(lang);
+	ng = NG(lang)
 
-	for i in range(timesrun): 
-		dataset.append(("Ran "+str(i+1), spelltest(basic.test(case), bias, verbose)));
-	print("Running for Cases: %r " %(basic.test(case)))	
+	print("------ Will print all examples------")
+	for i in range(timesrun):
+		dataset.append(("Ran "+str(i+1), spelltest(basic.test(case), ng, bias, verbose)));
+		## When running multiple times reset bias to None for next runs, else bias will again be introduced into NWORDS  
+		if bias:
+			bias = None
+
 	for item in dataset: print(item)
-#	print(NWORDS)
 
 if __name__ == '__main__':
 ## if parsing params from outside, change def main(params, ..); main(params, ..); 
