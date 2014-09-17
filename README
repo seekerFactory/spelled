@@ -14,25 +14,23 @@ Targets((X.Y) as major.minor):
 2.1:	Model for learning(need to learn and get close to expected words with training).
 2.2:	Edit set contains classes of same frequency words, utilise for correction.
 3.0:	Getting corpus data and literals of language(unicode) from web directly, reducing static entries into source using crawlers.
-3.1:	Graph ploters.
+3.1:	Choose method using flag=forMethod
+3.2:	Log results with command line flag (say -l for logging into results.txt)
+3.3:	Graph ploters.
 ------- Not started
 4:		form sentences from tags
 5:		learning from scripts | docs examples.
 -------
 
 COMMENTS:
-0:	Scripts (basic, enzyme, test1, test2, filecorct) are all independent examples.
-	Will get the (test* & basic) into one.
+0:	Scripts (basic, enzyme, spelled, filecorct) are all independent examples.
 	basic -- runs on small example set(<10) for testing if all works, ... fastly :) 
-	test1 -- medium set(270) test cases.
-	test2 -- large set(400) test cases.
+	filecorct —- linked with myBigErrorsList in corpus.eng and tries to correct it.
+	spelled -- handles all testcases(small, medium, large, file...). Will add logging result. 
+	tests -- basic(small set), test1(medium set(270)), test2(large set(400)), filetest() test case examples.
 	enzyme -- to introduce learned() and get more comparisions of result using enzymetest().
-	filecorct — linked with myBigErrorsList in corpus.eng and tries to correct it.
 
 	-------------------------------------
-	Running [basic, test1, test2, filecorct] from python shell:
-		>>> import basic
-		>>> basic.main()
 	-------------------------------------
 	Corrections from python shell:
 		Import package ngram(make sure in path)
@@ -47,6 +45,8 @@ COMMENTS:
 		>>> 
 		>>> ng.correct(dword);
 		'ring'
+	-------------------------------------
+	For basic, filecorct, spelled run with -h option too see more
 	-------------------------------------
 
 New Language: 
