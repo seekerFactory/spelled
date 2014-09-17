@@ -1,21 +1,41 @@
-import collections, regex
+import collections
+import time
+from functools import wraps 
 
 from . import WordProcessor as WP
 from . import Trainer
-#from tools.clswordProcessor import WordProcessor
-#from tools.clstrainer import Trainer
 
 
+## wrapper for checking time taken by each method
+def timethis(debug=False):
+	"""
+	Decorator to check execution time and logging
+	"""
+	def decorate(func):
+		if debug:
+			print("testing decorator")
+
+		@wraps(func)
+		def wrapper(*args, **kwargs):
+			start=time.time()
+			result=func(*args, **kwargs)
+			end=time.time()
+			if debug:
+				print("LoggingTime for method %s: %f"%(func.__name__, end-start))
+
+			return result
+		return wrapper
+	return decorate
 
 class NGram(WP, Trainer):
-## Very high dependency on _lang variable for selecting selecting other properties , set before calling train() with option(hindi | english)
-#	_lang = "";
-#	_book=""; _inPath=""; _alphabet = "";
-#	NWORDS=train([]);
-#	EXPECTENCE=train([]);
 
 	def __init__(self, lang, expectence=False):
-	
+		"""
+		lang:	language('english' || 'hindi') choosen to create language model
+		expectence:	Used when learning from expected words
+		"""
+
+## Need to remove hard coded data from here and get into config file
 		self.datapkg = 'corpus'
 		self.lang = lang;
 
@@ -31,66 +51,73 @@ class NGram(WP, Trainer):
 		wordsinbook = WP.wordsInText(self, data, self.alphabet);
 
 		self.NWORDS = Trainer.train(self, wordsinbook);
-		#self.NWORDS = Trainer.train(self, WP.wordsInText(self, WP.newreadBook(self, 'eng/big.txt'), self._alphabet));
 
-		#if (expectence == False):
-			#return (self._lang, self.NWORDS)
-		#elif (expectence == True):
-			#return (self._lang, self.NWORDS, self.EXPECTENCE)
+		#self.SPLITTED = Trainer.expectence()
 
-	## Still havn't started using WIKIERRORS
-	#WIKIERRORS = bigWikiTrainer(wordsInText(readBook('bigWikiErrors.txt', inPath), "\n+"), NWORDS)
+	
 
 
-## def known(words):
-## returns list of known words(appeared in languagemodel) from [words] passed
 	def known(self, words):
+		"""
+		Returns set of known words(appeared in languagemodel) from [words] passed
+		words:	list of words
+		"""
 		return set(w for w in words if w in self.NWORDS)
 
-
-## def correct(word):
-## Reasoning from norvig:
-## All known words of edit_distance 1 are infinitely more probable than known words of edit_distance 2, and infinitely less probable than a known word of edit_distance 0
-##
-## candidates = set with shortest edit_distance to original word as long as set has known words
-## After identifying candidate set it returns word with highest P(c) value estimated by NWORDS model
 	def correct(self, word):
-		candidates = self.known([word]) or self.known(self.edits1(word)) or self.known_edits2(word) or [word];
+		"""
+		Returns word with highest P(c) | frequency value estimated by language model for given word edits.
+		word:	word passed for correction
+
+		candidates = set(known words(shortest edit_distance to original word))
+		Known words @edit_distance1 are infinitely more probable than known words @edit_distance2 and infinitely less probable than known word @edit_distance0
+		"""
+# Need to remove multiple calls to edits1 from known_edits2 as it only needs the results of edits1
+		edits1set=self.edits1(word)
+		#candidates = self.known([word]) or self.known(edits1set) or self.known_edits2(edits1set) or [word];
+		try:
+			candidates = self.known([word]) or self.known(edits1set) or self.known_edits2(edits1set) or [word];
+		except Exception as e:
+			print(" :( **** Error raised *** ); ")
+			print("Reason: ", e)
+
     
-		return max(candidates, key=self.NWORDS.get)
+		return max( candidates, key=self.NWORDS.get); 
 
 
-## Same as correct(word), identifying max(candidates) set
 	def correctSet(self, word):
-		candidates = self.known([word]) or self.known(self.edits1(word)) or self.known_edits2(word) or [word];
+		"""
+		Returns set(candidates) for given word.
+		word:	word passed for correction
 
-##	print('candidateSet [[%s]]' %(candidates))
-##	for c in candidates:
-##		keyval=NWORDS[c]
-##		maxInSet = max(c, key=NWORDS.get)
-##		print('For cadidate [[ %s:(%d) ]] ' %(c, keyval))
-
-##	return max(candidates, key=NWORDS.get)
+		candidates = set(known words(shortest edit_distance to original word))
+		Known words @edit_distance1 are infinitely more probable than known words @edit_distance2 and infinitely less probable than known word @edit_distance0
+		"""
+		edits1set=self.edits1(word)
+		candidates = self.known([word]) or self.known(edits1set) or self.known_edits2(edits1set) or [word];
+		#candidates = self.known([word]) or self.known(edits1set) or self.known_edits2(word, edits1set) or [word];
 
 		return candidates
 
-## def split_words(word):
-## returns list of set(a, b) formed by breaking the word into two (a, b) eachtime
-## word = a + b
-## when len(word) is n there are n+1 elements in this list
 	def split_words(self, word):
+		"""
+		Returns list of set(a, b) formed by breaking the word into (a, b) for each char
+		word:	word passed for correction
+
+		If len(word) is n there are n+1 elements in this list
+		"""
 		split_set = [(word[:i], word[i:]) for i in range(len(word)+1)]
 		return split_set
 
-
-## def edits1(word):
-## returns a list of all edits which are at edit_distance 1
-## all_edits = deletion_edits + transpostion_edits + alteration_edits + insertion_edits
-## If (m: literarls in language, n: chars in word), 
-## (n): deletions, (n-1): transposes, (mn): alterations, m(n+1): insertions
-## Total_edits = (2n(m+1) + (m-1)) , at edit_distance 1
-## spell correction literature claims 80% to 95% of spelling errors are at edit_distance 1 from target
+#	@timethis(False)
 	def edits1(self, word):
+		"""
+		Returns set of edits(deletes, transposes, alterations, inserts) at edit_distance 1.
+		word:	word passed for correction 
+		For (m: literarls in language, n: chars in word), there are 
+			(n): deletions, (n-1): transposes, (mn): alterations, m(n+1): insertions
+			Total_edits = (2n(m+1) + (m-1)) , at edit_distance 1
+		"""
 		splits = self.split_words(word)
 		deletes = [a + b[1:] for a, b in splits]
 		transposes = [a + b[1] + b[0] + b[2:] for a, b in splits if len(b)>1]
@@ -99,10 +126,12 @@ class NGram(WP, Trainer):
 		return set(deletes + transposes + alterations + inserts)
 
 
-## def known_edits2(word):
-## returns the list of edits at edit_distance 2 and are known words
-## known words helps reduce size of list
-	def known_edits2(self, word):
-		return set(e2 for e1 in self.edits1(word) for e2 in self.edits1(e1) if e2 in self.NWORDS)
 
+
+	def known_edits2(self, edits1set):
+		"""
+		Returns set of edits at edit_distance 2 and are known words, known words reduces size of set.  
+		edits1set:	set of word @edit_distance 1
+		"""
+		return set(e2 for e1 in edits1set for e2 in self.edits1(e1) if e2 in self.NWORDS)
 

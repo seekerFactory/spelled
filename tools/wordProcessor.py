@@ -1,29 +1,40 @@
 import regex, pkgutil
+import hashlib
 
 
 class WordProcessor:
 
 	def removeNLine(self, line):
+		"""
+		remove new line char from line
+		"""
 		return regex.sub(r"(\n)", r"", line)
 
 
-## just a thought !# could be something not in literals list(including pause and small pause) will be easier to check.
 	def removeSChars(self, line):
-## will seperate sChars and pass name, as param,  to be removed 
-	#sChars = [r"(\,)", r"(\!)", r"(\?)", r"(\:)", r"(\;)", r"(\()", r"(\))", chr(0x0964), chr(0x0965), chr(0x097D)]
+		"""
+		remove special(specific) chars(sChars provided in list) from line
+		"""
 		sChars = [r"\,", r"\!", r"\?", r"\:", r"\;", r"\(", r"\)", chr(0x0964), chr(0x0965), chr(0x097D)]
 		for char in sChars:
 			line = regex.sub(char, r"", line)
 		return line
 							
 	def wordsInText(self, text, literals, seperator="\s+"):
-	## Word seperator will be (script, text) dependent!!
-	#return regex.split(seperator, text.lower())
-		return regex.findall(r"\w+", text.lower())
+		"""
+		returns list of tokens(words) in text
+		Word seperator will be (script, text) dependent!!
+		#return regex.split(seperator, text.lower())
+		"""
+		#return regex.findall(r"\w+", text.lower())
+		return regex.findall(r"\w+", text, flags=regex.IGNORECASE)
 
 								
 	def charecterSet(self, script="english"):
-## unicode set for hindi
+		"""
+		returns literals for script(english, hindi)
+		set all to unicode
+		"""
 
 		literals = "";
 		if script == "english":
@@ -35,17 +46,22 @@ class WordProcessor:
 		return literals
 
 
-#	def readBook(self, book, inPath, lineProcess=False):
-#		str="/"
-#		f = open(str.join((inPath, book)), encoding='utf-8')
-#		lines = f.read()
-
-	## Here lies the problem!! as each book has not so definite raw-data processing
-#		if lineProcess == True:
-#			return self.removeSChars(lines)
-#		return lines
-
 	def readBook(self, datapkg, book):
+		"""
+		returns data after reading
+		datapkg:
+		book:
+		"""
+		try:
+			data = pkgutil.get_data(datapkg, book)
+		except Exception as e:
+			print(" :( **** Error raised *** ); ")
+			print("Reason: ", e)
 
-		data = pkgutil.get_data(datapkg, book)
+		## md5 hash for text read
+		## could be helpful to assertain integrity of corpus data, and need only be reread(corpus) if hashMd5 changed in certain cases  
+		m = hashlib.md5()
+		m.update(data)
+##		print("Hash digest if file ", m.hexdigest())
+
 		return data.decode()
