@@ -13,6 +13,7 @@ from tools.ngram import NGram as NG
 ## When (correction) != (target) : (bad increases)
 ## When (target) not in NWORDS :  unknown word
 
+## def enzymetest(dict in testCases.test2.test(), NGram obj, bias, verbose)
 def enzymetest(tests, ng, bias=None, verbose=True):
 	import time
 	n, bad, unknown, start = 0, 0, 0, time.clock()
@@ -82,7 +83,7 @@ if __name__ == '__main__':
 
 ########## Change these as needed #############
 	lang = "english"
-	bias, verbose, timesrun = None, True, 1
+	bias, verbose, timesrun = None, True, 2
 ###############################################
 
 	dataset=[]

@@ -13,6 +13,7 @@ from tools.ngram import NGram as NG
 ## When (correction) != (target) : (bad increases)
 ## When (target) not in NWORDS :  unknown word
 
+## def spelltest(dict in testCases.basic.test(), NGram obj, bias, verbose)
 def spelltest(tests, ng, bias=None, verbose=True):
 	import time
 
