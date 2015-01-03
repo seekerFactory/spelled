@@ -13,13 +13,15 @@ Targets((X.Y) as major.minor):
 1:		Basic norvig spell checker(english, devnagri..): using bigram model(edit distance 1 and 2).
 2.1:	Model for learning(need to learn and get close to expected words with training).
 2.2:	Edit set contains classes of same frequency words, utilise for correction.
-3.0:	Getting corpus data and literals of language(unicode) from web directly, reducing static entries into source using crawlers.
+3.0:	Getting corpus data and literals of language(unicode) from network directly, reducing static entries into source using crawlers.
 3.1:	Choose method using flag=forMethod
-3.2:	Log results with command line flag (say -l for logging into results.txt)
-3.3:	Graph ploters.
+3.2:	Log results with command line flag, -l for logging into results.txt (Logging in py3)
+3.3:	Graph ploters(Insights for py3 graphs)
+
 ------- Not started
-4:		form sentences from tags
-5:		learning from scripts | docs examples.
+a:		form sentences from tags
+b:		learning from scripts | docs examples.
+c:		after creating ngram-model from particular doc, create sha1(doc + language used) and get data into particular processed form so next time for reprocessing arrives only when sha1 changes ie; new entry in doc changing it or language changes it.
 -------
 
 COMMENTS:
